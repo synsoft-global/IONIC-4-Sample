@@ -1,0 +1,94 @@
+<div *ngIf="!Isloggin">
+  <ion-header class="docs-header header">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title *ngIf="loginPage">{{'LOGIN' | xlat}}</ion-title>
+    <ion-title *ngIf="!loginPage">{{'FORGOT_PASSWORD_TITLE' | xlat}}</ion-title>
+  </ion-header>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-card class="loginBox">
+          <ion-card-header no-padding>
+            <div class="login-logo">
+              <img src="assets/img/logo.png" alt="Ionic logo">
+            </div>
+          </ion-card-header>
+          <ion-card-content *ngIf="loginPage">
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit(loginForm.value)" novalidate>
+              <ion-list>
+                <ion-item>
+                  <ion-label position="stacked" color="primary">{{'USERNAME' | xlat}}</ion-label>
+                  <ion-input maxlength="50" placeholder="{{'USERNAME' | xlat}}" [formControl]="loginForm.controls['username']"
+                    name="username" type="text" spellcheck="false" autocapitalize="off" required>
+                  </ion-input>
+                </ion-item>
+                <ion-text color="danger"> 
+                  <div *ngIf="loginForm.controls['username'].hasError('required') && loginForm.controls['username'].touched"
+                    class="text-danger text-left">{{'FIELD_REQUIRED' | xlat}}</div>
+                  <!-- <div *ngIf="loginForm.controls['username'].hasError('invalidEmailAddress') && loginForm.controls['username'].touched"
+                    class="text-danger text-left">{{'INVALID_EMAIL' | xlat}}</div> -->
+                </ion-text>
+                <ion-item>
+                  <ion-label position="stacked" color="primary">{{ 'PASSWORD' |
+                    xlat}}</ion-label>
+                  <ion-input maxlength="50" name="password" placeholder="{{ 'PASSWORD' | xlat}}" type="password"
+                    [formControl]="loginForm.controls['password']" required>
+                  </ion-input>
+                </ion-item>
+                <ion-text color="danger">
+                  <div *ngIf="loginForm.controls['password'].hasError('required') && loginForm.controls['password'].touched"
+                    class="text-danger text-left">{{'FIELD_REQUIRED' | xlat}}</div>
+                </ion-text>
+              </ion-list>
+              <ion-row responsive-sm>
+                <ion-col>
+                  <ion-button [disabled]="!loginForm.valid" type="submit" expand="block">{{'LOGIN' | xlat}}</ion-button>
+                </ion-col>
+              </ion-row>
+            </form>
+           <p text-center class="mt10 mb10"><a (click)="onChangePage()">
+              <!-- <ion-icon slot="start" name="person"></ion-icon> -->
+              <ion-label>
+                {{'FORGOT_PASSWORD' | xlat}}
+              </ion-label>
+            </a>
+          </p> 
+          </ion-card-content>
+          <ion-card-content *ngIf="!loginPage">
+            <form [formGroup]="forgotPasswordForm" (ngSubmit)="onPasswordChanget(forgotPasswordForm.value)" novalidate>
+              <ion-list>
+                <ion-item>
+                  <ion-label position="stacked" color="primary">{{'USERNAME_EMAIL' | xlat}}</ion-label>
+                <ion-input maxlength="50" placeholder="{{'USERNAME_EMAIL' | xlat}}" [formControl]="forgotPasswordForm.controls['username']"
+                    name="username" type="text" spellcheck="false" autocapitalize="off" required>
+                  </ion-input>
+                </ion-item>
+                <ion-text color="danger">
+                  <div *ngIf="forgotPasswordForm.controls['username'].hasError('required') && forgotPasswordForm.controls['username'].touched"
+                    class="text-danger text-left">{{'FIELD_REQUIRED' | xlat}}</div>
+                  <div *ngIf="forgotPasswordForm.controls['username'].hasError('invalidEmailAddress') && forgotPasswordForm.controls['username'].touched"
+                    class="text-danger text-left">{{'INVALID_EMAIL' | xlat}}</div>
+                </ion-text>
+              </ion-list>
+              <ion-row responsive-sm>
+                <ion-col>
+                  <ion-button [disabled]="!forgotPasswordForm.valid" type="submit" expand="block">{{'SUBMIT_TITLE' |
+                    xlat}}</ion-button>
+                </ion-col>
+              </ion-row>
+            </form>
+            <p text-center class="mt10 mb10"><a (click)="onChangePage()">
+              <!-- <ion-icon slot="start" name="person"></ion-icon> -->
+              <ion-label>
+                {{'LOGIN' | xlat}}
+              </ion-label>
+            </a>
+          </p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>

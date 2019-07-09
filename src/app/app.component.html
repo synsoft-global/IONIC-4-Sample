@@ -1,0 +1,31 @@
+<ion-app>
+  <div [hidden]="!isLoading" class="loading">
+    <img src="assets/img/loader.svg" />
+  </div>
+  <div class="docs-container">
+    <main style="padding:0">
+      <p class="activeInactive">
+        <!-- <ion-button float-right color="success" class="active uppercase" size="small" *ngIf="connection_status">{{'ONLINE' | xlat}}</ion-button> -->
+        <a class="onlineStatusBtn btnEdit" color="light" size="small" *ngIf="connection_status">
+          <span class="ellipses">{{ONLINE_TEXT}}</span>
+          <span class="circleGreen"></span>
+        </a>
+        <a class="offlineStatusBtn btnEdit" color="light" size="small" *ngIf="!connection_status">
+          <span class="ellipses">{{OFFLINE_TEXT}}</span>
+          <span class="circleRed"></span>
+        </a>
+
+        <!-- <ion-button float-right color="danger" class="inActive uppercase" size="small" *ngIf="!connection_status">{{'OFFLINE' | xlat}}</ion-button>     -->
+        <!-- <ion-icon *ngIf="Isloggin" (click)="logout()" float-right class="logoutBtn" name="power"></ion-icon> -->
+        <ion-button class="logoutBtn" *ngIf="Isloggin" (click)="logout()" float-right color="danger" size="small">{{LOGOUT_TEXT}}</ion-button>
+
+
+      </p>
+
+
+
+
+    </main>
+  </div>
+  <ion-router-outlet></ion-router-outlet>
+</ion-app>

@@ -1,0 +1,22 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Main Header</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="login-logo">
+    <img src="assets/img/appicon.svg" alt="Ionic logo">
+  </div>
+
+</ion-content>
+
+<ion-footer>
+  <div *ngIf="isLoggedIn">
+    User logged in
+  </div>
+
+</ion-footer>

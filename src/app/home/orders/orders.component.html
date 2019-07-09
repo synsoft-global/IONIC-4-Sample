@@ -1,0 +1,285 @@
+<ion-header class="docs-header header" style="margin-bottom: 15px;">
+
+  <ion-buttons slot="start">
+    <ion-menu-button></ion-menu-button>
+  </ion-buttons>
+
+  <ion-title>{{'ORDERS_VIEW' | xlat}}</ion-title>
+
+</ion-header>
+<div class="docs-container">
+  <main no-padding class="mobileMainPadding">
+    <ion-row>
+      <!-- start banner -->
+      <ion-col *ngIf="currentSupplier && currentSupplier.logo" text-center size="12">
+        <img alt="Supplier Logo" src="{{currentSupplier.logo | logoThumbnailUrl}}" height="100">
+      </ion-col>
+      <!-- end banner -->
+    </ion-row>
+  </main>
+</div>
+<div class="docs-container">
+  <main no-padding class="mobileMainPadding">
+    <ion-grid class="docs-content">
+      <ion-row>
+        <ion-card no-margin class="gridSearchCard width100 mobileNoboxshadow">
+          <div class="cstSearchCustomer header mb10 boxShadow">
+            <div class="docs-container gridSearchbox">
+
+              <ion-searchbar no-padding class="mobileSearchWidth" (change)="applyFilter()" (keyup)="applyFilter()"
+                placeholder="{{'SEARCH_TXT' | xlat}}" [(ngModel)]="searchText"></ion-searchbar>
+            </div>
+          </div>
+        </ion-card>
+      </ion-row>
+    </ion-grid>
+  </main>
+</div>
+<ion-content>
+  <div id="orderComponent" class="docs-container">
+    <main>
+      <ion-grid class="docs-content">
+        <ion-card class="cst-order-datefixed-grid">
+          <ion-card-content>
+            <ion-row>
+              <ion-col size="auto" size-md="12" size-sm="12" float-left class="width100">
+                <ion-item>
+                  <ion-label class="mt0 mr10">
+                    <h3 class="dateTypo"> {{"STARTING_DATE" | xlat}}</h3>
+                  </ion-label>
+                  <ion-datetime class="label-date orangeColor" placeholder="{{date}}" [(ngModel)]="startDate"
+                    (click)="addemelemt()" (ngModelChange)="GetSalesRecords();" doneText="{{'SAVE' | xlat}}"
+                    cancelText="{{'CANCEL' | xlat}}" display-format="DD/MM/YYYY" max="{{endDate}}"
+                    picker-format="DD/MM/YYYY"></ion-datetime>
+                </ion-item>
+              </ion-col>
+              <ion-col size="auto" size-md="12" size-sm="12" size-sm float-left class="width100">
+                <ion-item>
+                  <ion-label class="mt0 mr10">
+                    <h3 class="dateTypo">{{"ENDING_DATE" | xlat}}</h3>
+                  </ion-label>
+                  <ion-datetime class="label-date orangeColor" placeholder="{{date}}" [(ngModel)]="endDate"
+                    (click)="addemelemt()" (ngModelChange)="GetSalesRecords();" doneText="{{'SAVE' | xlat}}"
+                    cancelText="{{'CANCEL' | xlat}}" display-format="DD/MM/YYYY" min="{{startDate}}"
+                    picker-format="DD/MM/YYYY"></ion-datetime>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row padding>
+              <ion-col size="auto" size-md="12" size-sm="12" size-sm float-left>
+                <p class="cart-container__est-cost">{{"TOTAL_ORDERS" | xlat}} :
+                  <span>
+                    <strong> {{totalSales.total}}</strong>
+                  </span></p>
+              </ion-col>
+              <ion-col size="auto" size-md="12" size-sm="12" size-sm float-left>
+                <p class="cart-container__est-cost">{{"TOTAL_AMOUNT" | xlat}} :
+                  <span>
+                    <strong>{{totalSales.PriceAmount | currency:'$'}} + {{'TAX' | xlat}}</strong>
+                    <span class="afterTaxPrice">
+                      <strong> ({{totalSales.estPriceAfterTax | currency:'$'}})</strong>
+                    </span></span></p>
+              </ion-col>
+            </ion-row>
+
+          </ion-card-content>
+        </ion-card>
+      </ion-grid>
+      <ion-grid class="docs-content">
+        <ion-row>
+
+          <!-- <ion-grid class="docs-content">
+        <ion-card style="width:auto"> -->
+          <!-- <ion-card-content> -->
+          <div *ngIf="orders && orders.length==0">
+            <div class="card">
+              <h4 style="text-align : center">{{"NO_ORDERS_YET" | xlat}}</h4>
+            </div>
+          </div>
+          <span class="width100" *ngIf="orders && orders.length>0">
+            <!-- <div *ngFor="let o of itemsToDisplay; let viewOrder=false;let i = index;"> -->
+
+
+
+            <ion-card *ngFor="let o of itemsToDisplay; let viewOrder=false;let i = index;">
+              <!-- start prodcut detail card -->
+              <div class="card">
+                <!--<div class="item item-avatar" style="padding-bottom:10px">-->
+                <div class="row">
+                  <ion-list style="padding-bottom:0">
+                    <ion-item>
+                      <ion-avatar class="brandimg" slot="start">
+                        <img src="assets/img/suplai-list-circle.jpg">
+                      </ion-avatar>
+                      <ion-label>
+                        <h2 class="mb10"># {{o.order.orderConseq}} | {{o.customer.clientName}}
+
+                          <!-- start warning icon -->
+                          <div *ngIf="!o.order.supplierConf.confirmed" class="warningIcon">
+                            <p>
+                              <ion-icon color="danger" name="warning"></ion-icon>
+                            </p>
+                          </div>
+                          <!-- end warning icon -->
+
+
+                        </h2>
+                        <!-- start warning icon -->
+                        <!-- <div *ngIf="!o.order.supplierConf.confirmed" class="warningIcon">
+                      <p>
+                        <ion-icon color="danger" name="warning"></ion-icon>
+                      </p>
+                    </div> -->
+                        <!-- end warning icon -->
+
+                        <h3>{{o.customer.restaurantName}} ({{o.order.orderDate | date: 'dd/MM'}})</h3>
+                        <p *ngIf="!!o.order.deliveryDate">{{'DELIVERY_FOR' | xlat}} : {{o.order.deliveryDate
+                          |
+                          date: 'dd/MM'}}
+                        </p>
+                        <p *ngIf="o.order.supplierConf.confirmed">{{o.order.supplierConf.comments.substr(0,200)}}
+                        </p>
+
+                        <p *ngIf="!o.order.supplierConf.confirmed">{{"NOT_CONFIRMED" | xlat}}
+                        </p>
+
+                        <!-- <p *ngIf="!!o.order.exported">{{"EXPORTED_INT" | xlat}} : {{o.order.exported.date |
+                          date:
+                          'dd/MM'}}
+                        </p> -->
+
+                        <p *ngIf="!!o.customer.orderComments">{{o.customer.orderComments.substr(0,200)}}</p>
+
+                        <p *ngIf="o.order && o.order.standBy && o.order.standBy.reason">{{"STATUS_BLOCKED" | xlat}} :
+                          {{o.order.standBy.reason}}
+                          <!-- <select class="item-input item-select" [(ngModel)]="o.order.standBy"
+                            (change)="updateStandByStatus(o.order.standBy,o);">
+                            <option disabled selected value> {{'SELECT_ONE' | xlat}} </option>
+                            <option *ngFor="let reason of reasonsdata" [value]="reason | json">
+                              {{reason.reason}}
+                            </option>
+                          </select> -->
+                        </p>
+                        <p no-margin *ngIf="o.order.PayableAmount" class="cart-container__est-cost">
+                          {{"TOTAL_AMOUNT" | xlat}} :
+                          <span *ngIf="o.order.PayableAmount">
+                            {{o.order.TaxExclusiveAmount | currency:'$'}} + {{'TAX' | xlat}}
+                            <span class="afterTaxPrice" *ngIf="o.order.PayableAmount!== undefined || o.order.PayableAmount !== null ||
+                            o.order.PayableAmount !== 0">
+                              ({{o.order.PayableAmount | currency:'$'}})
+                            </span></span></p>
+
+                      </ion-label>
+                    </ion-item>
+                  </ion-list>
+                </div>
+                <!--</div>-->
+                <div class="row orderCardBtnALign">
+                  <div class="col col-75">
+                    <div class="item item-avatar" style="padding-bottom:6px">
+                      <ion-button *ngIf="!o.order.supplierConf.confirmed || o.order.supplierConf.clicked"
+                        (click)="o.order.supplierConf.clicked=true;o.order.supplierConf.confirmed='Confirmed';  o.order.supplierConf.comments = addComment('CONFIRM_TO_CUSTOMER_MSG',o.order.supplierConf); updateOrder('Confirmed',addComment('CONFIRM_TO_CUSTOMER_MSG',o.order.supplierConf),o.order);"
+                        color="success" size="small">
+                        <ion-icon name="checkmark-circle"></ion-icon>
+                      </ion-button>
+
+                      <ion-button *ngIf="!o.order.supplierConf.confirmed || o.order.supplierConf.clicked"
+                        (click)="o.order.supplierConf.clicked=true;commentStatus='Comments'; o.order.supplierConf.confirmed='Comments'; o.order.supplierConf.comments = addComment('COMMENTS_TO_CUSTOMER_MSG',o.order.supplierConf);"
+                        color="primary" size="small">
+                        <ion-icon name="chatboxes"></ion-icon>
+                      </ion-button>
+
+                      <ion-button *ngIf="!o.order.supplierConf.confirmed || o.order.supplierConf.clicked"
+                        (click)="o.order.supplierConf.clicked=true;commentStatus='Rejected'; o.order.supplierConf.confirmed='Rejected'; o.order.supplierConf.comments = addComment('REJECT_ORDER_MSG',o.order.supplierConf);"
+                        color="danger" size="small">
+                        <ion-icon name="trash"></ion-icon>
+                      </ion-button>
+                      <ion-button (click)="viewOrder=!viewOrder" color="dark" size="small">
+                        <ion-icon name="eye"></ion-icon>{{'VIEW_ORDER' | xlat}}
+                      </ion-button>
+                      <ion-button *ngIf="o.customer.phone && o.customer.phone!=undefined && o.customer.phone!=null"
+                        (click)="sendOrderWhatsApp(o)" class="whatsappBtn" size="small">
+                        <ion-icon name="logo-whatsapp"></ion-icon>&nbsp;{{'SEND_ORDER' | xlat}}
+                      </ion-button>
+                      <ion-button *ngIf="o.customer.phone && o.customer.phone!=undefined && o.customer.phone!=null"
+                        (click)="getRandomCampaign(o,'sms')" class="whatsappBtn" size="small">
+                        <ion-icon name="mail"></ion-icon>&nbsp;{{'SMS_ORDER' | xlat}}
+                      </ion-button>
+                      <!-- *ngIf="(currentDate | date: 'dd/MM/YYYY')==(o.order.orderDate | date: 'dd/MM/YYYY')" -->
+                      <!-- *ngIf="(currentDate | date: 'dd/MM/YYYY')==(o.order.orderDate | date: 'dd/MM/YYYY')" -->
+                      <ion-button class="whatsappBtn" size="small" color="danger" (click)="placeOrder(o)"
+                        *ngIf="(currentDate | date: 'dd/MM/YYYY')==(o.order.orderDate | date: 'dd/MM/YYYY') && !o.order.exported.exported && !o.order.excelexported.exported && !o.order.supplierConf.confirmed">
+                        {{'EDIT' | xlat}}
+                      </ion-button>
+                      <!-- *ngIf="(currentDate | date: 'dd/MM/YYYY')==(o.order.orderDate | date: 'dd/MM/YYYY')" -->
+                      <ion-button size="small" color="danger" (click)="presentDeleteOrder(o)"
+                        *ngIf="(currentDate | date: 'dd/MM/YYYY')==(o.order.orderDate | date: 'dd/MM/YYYY') && !o.order.exported.exported && !o.order.excelexported.exported && !o.order.supplierConf.confirmed">
+                        {{'DELETE' | xlat}}
+                      </ion-button>
+                    </div>
+                    <div *ngIf="o.order.supplierConf.commentOpen">
+                      <div class="row">
+                        <ion-item class="mb10 mr10">
+                          <ion-textarea maxlength="200" name="comments_{{i}}"
+                            [(ngModel)]="o.order.supplierConf.comments"></ion-textarea>
+                          <ion-button
+                            (click)="updateOrder(commentStatus,o.order.supplierConf.comments, o.order); commentStatus=undefined"
+                            color="tertiary" size="small">
+                            <ion-icon name="checkmark"></ion-icon>
+                          </ion-button>
+                        </ion-item>
+                      </div>
+                    </div>
+                    <div *ngIf="viewOrder" class="card mt10 mb10">
+                      <ul class="orderUL" no-margin no-padding *ngFor="let item of o.order.item;">
+                        <li no-margin>{{item.SellersItemIdentification}} | {{item.SellersInvoiceDescription}} :
+                          <strong>{{item.qty}}</strong>
+                          <span *ngIf="item.bonusqty">
+                            | ({{item.bonusqty}})
+                          </span>
+                          <span *ngIf="item.inventoryUnits">
+                            | ({{item.inventoryUnits}})
+                          </span>
+                          <span *ngIf="item.supplierPrice"> |
+                            {{item.supplierPrice.PriceAmount | currency:'$'}} + {{'TAX' | xlat}}
+                            <span class="afterTaxPrice" *ngIf="item.estPrice">
+                              ({{item.estPrice.estPriceAfterTax | currency:'$'}})
+                            </span></span> </li>
+                      </ul>
+                    </div>
+
+                  </div>
+                </div>
+                <!-- <div *ngIf="o.order.supplierConf.commentOpen">
+                    <div class="row">
+                      <ion-item>
+                        <ion-textarea name="comments_{{i}}" [(ngModel)]="o.order.supplierConf.comments" placeholder="Enter more information here..."></ion-textarea>
+                        <ion-button (click)="updateOrder(commentStatus,o.order.supplierConf.comments, o.order); commentStatus=undefined"
+                          color="tertiary" size="small">
+                          <ion-icon name="checkmark"></ion-icon>
+                        </ion-button>
+                      </ion-item>
+                    </div>
+                  </div> -->
+
+              </div>
+              <!-- end prodcut detail card -->
+
+            </ion-card>
+
+
+
+            <hr>
+            <!-- </div> -->
+            <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+              <ion-infinite-scroll-content></ion-infinite-scroll-content>
+            </ion-infinite-scroll>
+          </span>
+          <!-- </ion-card-content> -->
+          <!-- </ion-card> -->
+          <!-- </ion-grid> -->
+        </ion-row>
+      </ion-grid>
+    </main>
+  </div>
+</ion-content>
