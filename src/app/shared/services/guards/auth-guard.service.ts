@@ -1,3 +1,10 @@
+/*!
+ * Auth Gaurd Service
+ * @description auth-guard service provider check token before login.
+ * @author   Ajay Mishra <ajaymishra@synsoftglobal.com> <https://synsoftglobal.com>
+ * @license  MIT
+ * @see https://github.com/synsoft-global/IONIC-4-Sample
+ */
 import { AuthService } from './../auth/auth.service';
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, Route } from '@angular/router';

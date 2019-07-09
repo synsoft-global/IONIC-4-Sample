@@ -1,8 +1,15 @@
+/*!
+ * The server module from node.js, for the browser.
+ *
+ * @author   Ajay Mishra <ajaymishra@synsoftglobal.com> <https://synsoftglobal.com>
+ * @license  MIT
+ */
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
+
 
 if (environment.production) {
   enableProdMode();

@@ -1,6 +1,13 @@
 /**
  * This class provides the NameList service with methods to read names and add names.
  */
+/*!
+ * The server module from node.js, for the browser.
+ *
+ * @author   Ajay Mishra <ajaymishra@synsoftglobal.com> <https://synsoftglobal.com>
+ * @license  MIT
+ * @see https://github.com/synsoft-global/IONIC-4-Sample
+ */
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 

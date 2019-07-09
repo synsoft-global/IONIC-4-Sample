@@ -1,3 +1,11 @@
+/*!
+ * Login component class.
+ * Handle User login and forgot password.
+ * Load Login Page HTML and after from submit redirect order page.
+ * @author   Ajay Mishra <ajaymishra@synsoftglobal.com> <https://synsoftglobal.com>
+ * @see https://github.com/synsoft-global/IONIC-4-Sample
+ * @license  MIT
+ */
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators, Form } from '@angular/forms';
 import { AuthService, LockerService, Validator, CommonService } from '../../shared/services/index';
@@ -7,11 +15,18 @@ import { AlertController } from '@ionic/angular';
 import { _ } from 'underscore';
 import { XlatPipe } from '../../shared/pipe/xlat.pipe';
 
+/**
+ * Component .
+ * @param {!webdriver.Capabilities} capabilities The capabilities object.
+ * @return {!Options} The ChromeDriver options.
+ */
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
+
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   forgotPasswordForm: FormGroup;    // Form for login
@@ -23,18 +38,22 @@ export class LoginComponent implements OnInit {
   public currentSupplier: any;
   public userSuppliers: any;
   Isloggin: boolean = false;
-  loginPage: boolean = true;
-
+  public loginPage: boolean = true;
 
   subscriptions: any[] = [];  // stores all service subscriptions
 
   /**
+   * @constructor
    * @param  {FormBuilder} private_fb: used to create forms
    * @param  {LockerService} private_lockerService: used to handle local storage
    * @param  {AuthService} private_authService: authentication service
    * @param  {Router} privaterouter: used for routing
    * @param  {ActivatedRoute} privateroute
    * @param  {ToastrService} private_toastr: used to generate toast notifications
+   * @param  {AlertController} public_alertController: used to generate alert notifications
+   * @param  {CommonService} private_commonService: used to invoke common service
+   * @param  {Configuration} private_config: used for config variable access
+   * @param  {XlatPipe} private_xlat: used to translate instant conversion
    */
   constructor(private _fb: FormBuilder,
     private _lockerService: LockerService,
@@ -45,7 +64,13 @@ export class LoginComponent implements OnInit {
     private _commonService: CommonService,
     private _config: Configuration,
     private xlat: XlatPipe) {
-    // binding loginForm with template
+
+
+    /**
+    * Login form group.
+    * username control. 
+    * password conrol.
+    */
     this.loginForm = _fb.group({
       username: new FormControl('', [
         Validators.required,
@@ -56,6 +81,10 @@ export class LoginComponent implements OnInit {
       ]),
     });
 
+    /**
+   * forgot password form group.
+   * username control. 
+   */
     this.forgotPasswordForm = _fb.group({
       username: new FormControl('', [
         Validators.required,
@@ -63,6 +92,10 @@ export class LoginComponent implements OnInit {
       ])
     });
 
+    /**
+    * Watch login property. After successfully logged-in change login flag.
+    * username control.
+    */
     this.subscriptions.push(_commonService.loginPropertyChanged$.subscribe(
       data => {
         if (data)
@@ -73,6 +106,11 @@ export class LoginComponent implements OnInit {
     );
   }
 
+  /**
+  * Call ngOninit when login componenet loaded. 
+  * Check if token already exists return home page.
+  * username control.
+  */
   ngOnInit() {
     if (!this._lockerService.get('demo_token') || this._lockerService.get('demo_token') == 'undefined' || this._lockerService.get('demo_token') == 'myToken') {
       this.router.navigate(['/']);
@@ -92,14 +130,15 @@ export class LoginComponent implements OnInit {
   onSubmit(value) {
     this._commonService.showLoading(true);
 
-    /**
-     * call to login service
-     * @param  {FormGroup} value: loginForm
-     */
     const loginFormData = {
       username: value.username.trim(),
       password: value.password.trim()
     };
+
+    /**
+     * Handles the Sign In request
+      * @param  {FormGroup} value: loginForm     
+    */
     this.subscriptions.push(this._authService.GetLoginInfo(loginFormData).subscribe(
       res => {
         // on success set the auth token and route to /dashboard
@@ -152,15 +191,15 @@ export class LoginComponent implements OnInit {
   }
 
   /**
-  * Handles the Sign In request
-  * @param  {FormGroup} value: loginForm
+  * Handles the forgot password request
+  * @param  {FormGroup} value: forgotPasswordForm
   */
   onPasswordChanget(value) {
     this._commonService.showLoading(true);
 
     /**
      * call to login service
-     * @param  {FormGroup} value: loginForm
+     * @param  {FormGroup} value: forgotPasswordForm
      */
     let message = {
       L1: this.xlat.transform('PSW_CHANGE_L1'),
@@ -218,7 +257,9 @@ export class LoginComponent implements OnInit {
 
   /**
     * Show success pop up
-    *
+    * @param  {String} message
+    * @alertController public
+    * @xlat private
     * */
   async showSuccess(message) {
     const alert = await this.alertController.create({
@@ -232,8 +273,10 @@ export class LoginComponent implements OnInit {
 
   /**
   * Show error alert
-  *
-  * */
+  * @param  {String} message
+  * @alertController public
+  * @xlat private
+  */
   async showError(message) {
     const alert = await this.alertController.create({
       header: this.xlat.transform('ERROR_TITLE'),
@@ -243,10 +286,18 @@ export class LoginComponent implements OnInit {
     await alert.present();
   }
 
+  /**
+    * On page change event switch login and forgot password view.
+    * @loginPage public
+    * */
   onChangePage() {
     this.loginPage = !this.loginPage;
   }
 
+  /**
+     * Called once, before the instance is destroyed.
+     * Add 'implements OnDestroy' to the class.
+     * */
   ngOnDestroy() {
     this.subscriptions.forEach(s => s.unsubscribe());
   }

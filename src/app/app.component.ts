@@ -1,3 +1,11 @@
+/*!
+ * App Component
+ * @description this file include app component feature. Check user and netwrok status.
+ * Handle redirection of match url.
+ * @author   Ajay Mishra <ajaymishra@synsoftglobal.com> <https://synsoftglobal.com>
+ * @license  MIT
+ * @see https://github.com/synsoft-global/IONIC-4-Sample
+ */
 import { Component, NgZone } from '@angular/core';
 
 import { Platform, LoadingController } from '@ionic/angular';
@@ -9,12 +17,21 @@ import { Configuration } from './app.constants';
 import { AlertController } from '@ionic/angular';
 import { Network } from '@ionic-native/network/ngx';
 import { XlatPipe } from './shared/pipe/xlat.pipe';
-import { Globalization } from '@ionic-native/globalization/ngx';
 
+/**
+* @Component
+* Define app component.
+* Include app html template.
+*/
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
+
+/**
+* @Component
+* Export app component.
+*/
 
 export class AppComponent {
 
@@ -29,6 +46,22 @@ export class AppComponent {
   OFFLINE_TEXT: any = this.xlat.transform('OFFLINE');
   LOGOUT_TEXT: any = this.xlat.transform('LOGOUT');
 
+  /**
+  * @constructor
+  * @param  {Platform} private_platform
+  * @param  {SplashScreen} private_splashScreen
+  * @param  {StatusBar} private_statusBar
+  * @param  {CommonService} private_commonService
+  * @param  {Router} private_router
+  * @param  {LockerService} private__lockerService
+  * @param  {LoadingController} private_loadingController
+  * @param  {AuthService} private__authService
+  * @param  {AlertController} private_alertController
+  * @param  {Network} private_network
+  * @param  {XlatPipe} private_xlat
+  * @param  {Configuration} private__config
+  * @param  {NgZone} private_ngZone
+  */
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -40,17 +73,18 @@ export class AppComponent {
     private _authService: AuthService,
     public alertController: AlertController,
     private network: Network,
-    private globalization: Globalization,
     private xlat: XlatPipe,
     private _config: Configuration,
     private ngZone: NgZone
   ) {
 
 
-
-    /**
-     *  Initilize app function
-     * Check User Login property changed.
+    /**   
+     * Check User Login property.
+     * Subscribe network change property.
+     *  @loadingPropertyChanged public
+     *  @presentLoading function
+     *  @closeLoading function
      */
     this.initializeApp();
     this.subscriptions.push(_commonService.loadingPropertyChanged$.subscribe(
@@ -72,10 +106,13 @@ export class AppComponent {
 
 
     if (this.platform.is('cordova')) {
-
-
+      /*
+      * check if platform is cordova.
+      * Check network satus and update.
+      * Subscribe network status and update app.
+      * Alert offline message. 
+      */
       this.platform.ready().then(() => {
-
         if (this.network.type == 'none') {
           self._lockerService.set('connection_status', 1, self._config.TokenExpiryDays);
           self.connection_status = false;
@@ -111,6 +148,12 @@ export class AppComponent {
       }
 
     } else {
+      /*
+     * check if platform is browser.
+     * Check network satus and update.
+     * Subscribe network status and update app.
+     * Alert offline message.
+     */
       window.addEventListener('online', () => {
         self._lockerService.set('connection_status', 0, self._config.TokenExpiryDays);
         self.connection_status = true;
@@ -140,17 +183,14 @@ export class AppComponent {
         this.setDefaultText();
       }
     }
-
-
-
   }
 
 
   /**
-   *  Process Order when user online.
-   * 
+   *  Process Order when user online and redirect to order tab.
+   * @_authService private
+   * @_lockerService private
    */
-
   processOrder() {
     let status = this._lockerService.get('connection_status');
     if (status == 0) {
@@ -163,10 +203,11 @@ export class AppComponent {
   }
 
   /**
-  *  Logout User
-  *
+  *  Logout current user and redirect to login page.
+  * @Isloggin private
+  * @_commonService private
+  * @_router private
   */
-
   logout() {
     this.Isloggin = false;
     this._commonService.showLogin(false);
@@ -179,16 +220,16 @@ export class AppComponent {
 
   /**
   *  Init function
-  *
+  * check and process pending orders.
+  * @_lockerService private
+  * @_router private
+  * @Isloggin private
+  * @subscriptions private
   */
-
-
-
   ngOnInit() {
     let self = this;
     this.processOrder();
     this.subscriptions.push(this._router.events.subscribe((evt) => {
-
       if (!(evt instanceof NavigationEnd)) {
         return;
       }
@@ -197,12 +238,11 @@ export class AppComponent {
         this.Isloggin = false;
       }
       else {
+        /**
+         * Redirect to app order tab
+         */
         if (evt.url == '/app/orders') {
           this._commonService.showTabChange('orders');
-        } else if (evt.url == '/app/customers') {
-          this._commonService.showTabChange('customers');
-        } else if (evt.url == '/app/invoices') {
-          this._commonService.showTabChange('invoices');
         } else if (evt.url == '/') {
           this._router.navigate(['/app/orders']);
           this._commonService.showTabChange('orders');
@@ -218,19 +258,29 @@ export class AppComponent {
 
   /**
   *  Set Default text.
-  *
+  * @ONLINE_TEXT public
+  * @OFFLINE_TEXT public
+  * @LOGOUT_TEXT public
+  * @xlat private
   */
-
   setDefaultText() {
     this.ONLINE_TEXT = this.xlat.transform('ONLINE');
     this.OFFLINE_TEXT = this.xlat.transform('OFFLINE');
     this.LOGOUT_TEXT = this.xlat.transform('LOGOUT');
   }
 
+  /**
+   * Open loading screen.
+   *  @isLoading public   
+   */
   async presentLoading() {
     this.isLoading = true;
   }
 
+  /**
+  * Close loading screen.
+  *  @isLoading public
+  */
   async closeLoading() {
     this.ngZone.run(() => {
       this.isLoading = false;
@@ -239,9 +289,10 @@ export class AppComponent {
 
   /**
   *  Show Offline Alert.
-  *
+  * @param  {String} message
+  * @alertController public
+  * @xlat private
   */
-
   async showOfflineMsg(message) {
     const alert = await this.alertController.create({
       header: '',
@@ -254,9 +305,10 @@ export class AppComponent {
 
   /**
   *  Show Success Message.
-  *
+  * @param  {String} message
+  * @alertController public
+  * @xlat private
   */
-
   async showSuccess(message) {
     const alert = await this.alertController.create({
       header: this.xlat.transform('SUCCESS_TITLE'),
@@ -269,7 +321,9 @@ export class AppComponent {
 
   /**
   *  Show Error Message.
-  *
+  * @param  {String} message
+  * @alertController public
+  * @xlat private
   */
   async showError(message) {
     const alert = await this.alertController.create({
@@ -281,14 +335,25 @@ export class AppComponent {
   }
 
 
-
+  /**
+  * Show splash screen and load app.
+  * @param  {String} message
+  * @platform private
+  * @statusBar private
+  * @splashScreen private
+  */
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.splashScreen.hide();
     });
-
   }
+
+  /**
+   * Called once, before the instance is destroyed.
+   * Add 'implements OnDestroy' to the class.
+   * 
+  */
   ngOnDestroy() {
     this.subscriptions.forEach(s => s.unsubscribe());
   }

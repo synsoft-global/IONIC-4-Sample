@@ -1,3 +1,10 @@
+/*!
+ * This file export shared module.
+ * import all common module and translate pipe.
+ * @author   Ajay Mishra <ajaymishra@synsoftglobal.com> <https://synsoftglobal.com>
+ * @license  MIT
+ * @see https://github.com/synsoft-global/IONIC-4-Sample
+ */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
@@ -16,6 +23,10 @@ import { AuthGuard } from './services/guards/auth-guard.service';
 
 })
 
+/**
+ * @SharedModule
+ * import providers (lockerserice, CommonService, AuthService, NetworkService, AuthGuard)
+ */
 export class SharedModule {
   static forRoot(): ModuleWithProviders {
     return {

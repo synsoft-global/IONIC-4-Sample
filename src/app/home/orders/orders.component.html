@@ -207,15 +207,8 @@
                       </ion-button>
                       <!-- *ngIf="(currentDate | date: 'dd/MM/YYYY')==(o.order.orderDate | date: 'dd/MM/YYYY')" -->
                       <!-- *ngIf="(currentDate | date: 'dd/MM/YYYY')==(o.order.orderDate | date: 'dd/MM/YYYY')" -->
-                      <ion-button class="whatsappBtn" size="small" color="danger" (click)="placeOrder(o)"
-                        *ngIf="(currentDate | date: 'dd/MM/YYYY')==(o.order.orderDate | date: 'dd/MM/YYYY') && !o.order.exported.exported && !o.order.excelexported.exported && !o.order.supplierConf.confirmed">
-                        {{'EDIT' | xlat}}
-                      </ion-button>
                       <!-- *ngIf="(currentDate | date: 'dd/MM/YYYY')==(o.order.orderDate | date: 'dd/MM/YYYY')" -->
-                      <ion-button size="small" color="danger" (click)="presentDeleteOrder(o)"
-                        *ngIf="(currentDate | date: 'dd/MM/YYYY')==(o.order.orderDate | date: 'dd/MM/YYYY') && !o.order.exported.exported && !o.order.excelexported.exported && !o.order.supplierConf.confirmed">
-                        {{'DELETE' | xlat}}
-                      </ion-button>
+
                     </div>
                     <div *ngIf="o.order.supplierConf.commentOpen">
                       <div class="row">

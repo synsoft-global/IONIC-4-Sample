@@ -1,22 +1,30 @@
+/*!
+ * Pipe module
+ * @description list of all common pipe used in app.
+ * @author   Ajay Mishra <ajaymishra@synsoftglobal.com> <https://synsoftglobal.com>
+ * @license  MIT
+ * @see https://github.com/synsoft-global/IONIC-4-Sample
+ */
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ModuleWithProviders } from '@angular/compiler/src/core';
 
 
-import { CustomerProductsFilterPipe, CustomerFilterPipe, ArraySortPipe, ArraySortOrderPipe, thumbnailUrlPipe, logoThumbnailUrlPipe } from './common.pipe';
+import { ArraySortOrderPipe, thumbnailUrlPipe, logoThumbnailUrlPipe } from './common.pipe';
 
 @NgModule({
-  declarations: [CustomerProductsFilterPipe, CustomerFilterPipe, ArraySortPipe, ArraySortOrderPipe, thumbnailUrlPipe, logoThumbnailUrlPipe],
-  providers: [CustomerProductsFilterPipe, CustomerFilterPipe, ArraySortPipe, ArraySortOrderPipe, thumbnailUrlPipe, logoThumbnailUrlPipe],
-  exports: [CommonModule, CustomerProductsFilterPipe, CustomerFilterPipe, ArraySortPipe, ArraySortOrderPipe, thumbnailUrlPipe, logoThumbnailUrlPipe],
+  declarations: [ArraySortOrderPipe, thumbnailUrlPipe, logoThumbnailUrlPipe],
+  providers: [ArraySortOrderPipe, thumbnailUrlPipe, logoThumbnailUrlPipe],
+  exports: [CommonModule, ArraySortOrderPipe, thumbnailUrlPipe, logoThumbnailUrlPipe],
 
 })
+
 
 export class PipeModule {
   static forRoot(): ModuleWithProviders {
     return {
       ngModule: PipeModule,
-      providers: [CustomerProductsFilterPipe, CustomerFilterPipe, ArraySortPipe, ArraySortOrderPipe, thumbnailUrlPipe, logoThumbnailUrlPipe]
+      providers: [ArraySortOrderPipe, thumbnailUrlPipe, logoThumbnailUrlPipe]
     }
   }
 }
@@ -31,6 +39,10 @@ import { XlatPipe } from './xlat.pipe';
 
 })
 
+/**
+* @XlatPipeModule
+* Export pipe module.
+*/
 export class XlatPipeModule {
   static forRoot(): ModuleWithProviders {
     return {

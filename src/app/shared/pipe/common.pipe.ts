@@ -1,72 +1,18 @@
+/*!
+ * Common Pipe
+ * @description this file include function defination of all common pipe.
+ * @author   Ajay Mishra <ajaymishra@synsoftglobal.com> <https://synsoftglobal.com>
+ * @license  MIT
+ * @see https://github.com/synsoft-global/IONIC-4-Sample
+ */
 import { Injectable, Pipe, PipeTransform } from '@angular/core';
 
-@Pipe({
-  name: 'customerProductsFilter'
-})
-@Injectable()
-export class CustomerProductsFilterPipe implements PipeTransform {
-
-  transform(customerProducts: any[], searchText: string, searchColumn: string): any[] {
-    if (!customerProducts) return [];
-    if (!searchText) return customerProducts;
-    searchText = searchText.toLowerCase();
-    if (searchColumn == 'name') {
-      return customerProducts.filter(it => {
-        return it.name.toLowerCase().includes(searchText);
-      });
-    } else if (searchColumn == 'category1') {
-      return customerProducts.filter(it => {
-        return (it['categories'] && it['categories']['category1'] == searchText);
-      });
-    } else if (searchColumn == 'category2') {
-      return customerProducts.filter(it => {
-        return (it['categories'] && it['categories']['category2'] == searchText);
-      });
-    } else {
-      return customerProducts;
-    }
-
-
-  }
-}
-
-@Pipe({
-  name: 'customerFilter'
-})
-@Injectable()
-export class CustomerFilterPipe implements PipeTransform {
-
-  transform(customers: any[], searchText: string): any[] {
-    if (!customers) return [];
-    if (!searchText) return customers;
-    searchText = searchText.toLowerCase();
-    return customers.filter(it => {
-      return it.restaurantName.toLowerCase().includes(searchText);
-    });
-  }
-}
-
-@Pipe({
-  name: "sort"
-})
-export class ArraySortPipe implements PipeTransform {
-  transform(array: any, field: string): any[] {
-    if (!Array.isArray(array)) {
-      return;
-    }
-    array.sort((a: any, b: any) => {
-      if (a[field] < b[field]) {
-        return -1;
-      } else if (a[field] > b[field]) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
-    return array;
-  }
-}
-
+/**
+  * @sortOrder
+  * Sort order by order date.
+  *  @param array:Array
+  *  @return array: Array
+  */
 @Pipe({
   name: "sortOrder"
 })
@@ -88,7 +34,12 @@ export class ArraySortOrderPipe implements PipeTransform {
   }
 }
 
-
+/**
+  * @thumbnailUrl
+  * Scale logo image url from cloudinary
+  *  @param logo:string
+  *  @return response:string
+  */
 @Pipe({
   name: "thumbnailUrl"
 })
@@ -110,6 +61,12 @@ export class thumbnailUrlPipe implements PipeTransform {
   }
 }
 
+/**
+  * @logoThumbnailUrl
+  * Scale logo image url from cloudinary
+  *  @param logo:string
+  *  @return response:string
+  */
 @Pipe({
   name: "logoThumbnailUrl"
 })
@@ -132,7 +89,3 @@ export class logoThumbnailUrlPipe implements PipeTransform {
     return small_img;
   }
 }
-
-
-
-

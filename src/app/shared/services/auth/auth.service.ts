@@ -1,3 +1,10 @@
+/*!
+ * this file include all auth services.
+ * @description this sfile include app component feature. Check user and netwrok status.
+ * @author   Ajay Mishra <ajaymishra@synsoftglobal.com> <https://synsoftglobal.com>
+ * @license  MIT
+ * @see https://github.com/synsoft-global/IONIC-4-Sample
+ */
 import { Injectable } from '@angular/core';
 import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { map, catchError } from 'rxjs/operators';
@@ -6,13 +13,20 @@ import { CommonService } from '../common/index';
 import { Configuration } from 'src/app/app.constants';
 import { LockerService } from '../locker/index';
 import { Cloudinary } from '@cloudinary/angular-5.x';
-@Injectable()
 
+@Injectable()
 export class AuthService {
   private actionUrl: string;
   private httpOptions: {};
   Isloggin: boolean;
-  constructor(private http: Http, private _config: Configuration, private _commonService: CommonService, private _lockerService: LockerService, private cloudinary: Cloudinary) {
+
+  constructor(
+    private http: Http,
+    private _config: Configuration,
+    private _commonService: CommonService,
+    private _lockerService: LockerService,
+    private cloudinary: Cloudinary
+  ) {
     this.actionUrl = _config.ServerAPIUrl;
     this.handleError = this.handleError.bind(this);
   }
@@ -26,25 +40,34 @@ export class AuthService {
   }
 
   /**
-  *  Check If user logged in
-  **/
+   * @IsLoggedIn
+   * get User By email
+   * @param data:string
+   * @_commonService private
+   * @return respose:boolean
+   * @Isloggin private
+   * @actionUrl private
+   **/
   IsLoggedIn() {
-
     if ((!this._lockerService.get('demo_token') || this._lockerService.get('demo_token') == 'undefined' || this._lockerService.get('demo_token') == 'myToken')) {
       this.Isloggin = false;
     }
     else {
       this.Isloggin = true;
     }
-
     return this.Isloggin;
 
   }
 
   /**
-  *  Set routes for Login and Order app page.
-  *
-  */
+   * @GetLoginInfo
+   * login request.
+   * @param data:object
+   * @return response:object
+   * @_commonService private
+   * @http private
+   * @actionUrl private
+   **/
 
   GetLoginInfo(data) {
     this._commonService.showLoading(true);
@@ -54,20 +77,13 @@ export class AuthService {
   }
 
   /**
-  *  get user id
+  * @changePasswordCheck
+  * get User By email
+  * @param data:string
+  * @_commonService private
+  * @http private
+  * @actionUrl private
   **/
-
-  getUserById(encodedId) {
-    this._commonService.showLoading(true);
-    return this.http.get(this.actionUrl + 'api/v1/getUserById/' + encodedId)
-      .pipe(map((response: Response) => { this.onSuccess(); return response.json() }))
-      .pipe(catchError(this.handleError));
-  }
-
-  /**
-  *  Check for change password
-  **/
-
   changePasswordCheck(data) {
     return this.http.post(this.actionUrl + 'api/v1/changePasswordCheck/', data, this.httpOptions)
       .pipe(map((response: Response) => { this.onSuccess(); return response.json() }))
@@ -75,7 +91,13 @@ export class AuthService {
   }
 
   /**
-  *  get User By email
+  * @getUserByEmail
+  * get User By email
+  * @param data:string
+  * @return data:json
+  * @_commonService private
+  * @http private
+  * @actionUrl private
   **/
   getUserByEmail(data) {
     this._commonService.showLoading(true);
@@ -84,49 +106,14 @@ export class AuthService {
       .pipe(catchError(this.handleError));
   }
 
-  getUserByUsername(data) {
-    this._commonService.showLoading(true);
-    return this.http.get(this.actionUrl + 'api/v1/getUserByUsername/' + data.username + '/' + data.supplierAccountNum)
-      .pipe(map((response: Response) => { this.onSuccess(); return response.json() }))
-      .pipe(catchError(this.handleError));
-  }
-
-  changePasswordMail(data) {
-    this._commonService.showLoading(true);
-    return this.http.put(this.actionUrl + 'api/v1/changePasswordMail', data)
-      .pipe(map((response: Response) => { this.onSuccess(); return response.json() }))
-      .pipe(catchError(this.handleError));
-  }
-
   /**
-  *  Update user without login
-  **/
-
-  updateuserWithoutLogin(data) {
-    return this.http.put(this.actionUrl + 'api/v1/updateuser', data, this.httpOptions)
-      .pipe(map((response: Response) => { this.onSuccess(); return response.json() }))
-      .pipe(catchError(this.handleError));
-  }
-
-
-  getObjectID() {
-    this.init();
-    this._commonService.showLoading(true);
-    return this.http.get(this.actionUrl + 'api/v1/objectID/', this.httpOptions)
-      .pipe(map((response: Response) => { this.onSuccess(); return response.json() }))
-      .pipe(catchError(this.handleError));
-  }
-
-  Updateuser(data) {
-    this.init();
-    this._commonService.showLoading(true);
-    return this.http.put(this.actionUrl + 'api/v1/updateuser', data, this.httpOptions)
-      .pipe(map((response: Response) => { this.onSuccess(); return response.json() }))
-      .pipe(catchError(this.handleError));
-  }
-
-  /**
-  *  get suppiler catalog
+  * @getSupplierCatalogV2
+  * get suppiler catalog from suppiler account number.
+  * @param data:object
+  * @_commonService private
+  * @return data:JSON
+  * @http private
+  * @actionUrl private
   **/
   getSupplierCatalogV2(data) {
     this.init();
@@ -135,55 +122,15 @@ export class AuthService {
       .pipe(catchError(this.handleError));
   }
 
-
-
-  updateuserPhone(data) {
-    this.init();
-    this._commonService.showLoading(true);
-    return this.http.put(this.actionUrl + 'api/v1/updatePhone', { data: data }, this.httpOptions)
-      .pipe(map((response: Response) => { this.onSuccess(); return response.json() }))
-      .pipe(catchError(this.handleError));
-  }
-
   /**
-  *  Get customer cellphone
-  **/
-  getCustomerCellPhone(supplierAccountNum, accountNum) {
-    this.init();
-    this._commonService.showLoading(true);
-    return this.http.get(this.actionUrl + 'api/v1/getCustomerCellphone/' + supplierAccountNum + '/' + accountNum, this.httpOptions)
-      .pipe(map((response: Response) => { this.onSuccess(); return response.json() }))
-      .pipe(catchError(this.handleError));
-  }
-
-  /**
-   * get random campaign
+   * @processOrder
+   * post queue order data to server.
+   * @param data:string
+   * @_lockerService private
+   * @http private
+   * @return processqueue:boolean
+   * @actionUrl private
    **/
-  getRandomCampaign(startDate, supplierAccountNum, accountNum) {
-    this.init();
-    return this.http.get(this.actionUrl + 'api/v1/getRandomCampaign/' + supplierAccountNum + '?fromdate=' + startDate + '&accountNum=' + accountNum, this.httpOptions)
-      .pipe(map((response: Response) => { return response.json() }))
-      .pipe(catchError(this.handleError));
-  }
-
-  /**
-    * get current suppiler detail
-    *
-    * */
-
-  getSupplierDetails(accountNum) {
-    this.init();
-    this._commonService.showLoading(true);
-    return this.http.get(this.actionUrl + 'api/v1/getSupplierDetails/' + accountNum, this.httpOptions)
-      .pipe(map((response: Response) => { this.onSuccess(); return response.json() }))
-      .pipe(catchError(this.handleError));
-  }
-
-  /**
-    * Process order after network online.
-    *
-    * */
-
   processOrder() {
     this.init();
     let processqueue = false;
@@ -209,9 +156,17 @@ export class AuthService {
   }
 
   /**
-  * Get total sales
-  *
-  * */
+  * @getTotalSales
+  * get total sales date.
+  * @param supplierAccountNum:string
+  * @param startDate:Date
+  * @param endDate:Date
+  * @param internalId:string
+  *  @return response:JSON
+  * @_commonService private
+  * @http private
+  * @actionUrl private
+  **/
   getTotalSales(supplierAccountNum, internalId, startDate, endDate) {
     this.init();
 
@@ -221,9 +176,16 @@ export class AuthService {
   }
 
   /**
-  *Get Order from suppiler
-  *
-  * */
+  * @getOrdersForSupplier
+  * get orders list.
+  * @param supplierAccountNum:string
+  * @param searchText:string
+  * @param index:number
+  * @param internalId:string
+  * @_commonService private
+  * @http private
+  * @actionUrl private
+  **/
   getOrdersForSupplier(supplierAccountNum, searchText, index, internalId) {
     this.init();
     this._commonService.showLoading(true);
@@ -233,9 +195,13 @@ export class AuthService {
   }
 
   /**
-  * Get order reasons status
-  *
-  * */
+  * @getReasons
+  * get reason data.
+  * @param data:string
+  * @_commonService private
+  * @http private
+  * @actionUrl private
+  **/
   getReasons(data) {
     this.init();
     this._commonService.showLoading(true);
@@ -245,23 +211,22 @@ export class AuthService {
   }
 
   /**
-  * Update order
-  *
-  * */
-  updateOrder(data) {
-    this.init();
-    this._commonService.showLoading(true);
-    return this.http.put(this.actionUrl + 'api/v1/updateOrder/' + data.orderId, { orderDetails: data.orderDetails }, this.httpOptions)
-      .pipe(map((response: Response) => { this.onSuccess(); return response.json() }))
-      .pipe(catchError(this.handleError));
-  }
-
-
+  * @handleError
+  * Handle error response in api and return error JOSN.
+  * @param error:object
+  * @return error:json
+  * @_commonService private
+  **/
   private handleError(error: any) {
     this._commonService.showLoading(false);
     return throwError(error.json());
   }
 
+  /**
+   * @onSuccess
+   * hide loading screen after get api response.
+   * @_commonService private
+   **/
   private onSuccess() {
     this._commonService.showLoading(false);
   }

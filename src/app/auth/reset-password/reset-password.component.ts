@@ -1,6 +1,13 @@
+/*!
+ * The server module from node.js, for the browser.
+ *
+ * @author   Ajay Mishra <ajaymishra@synsoftglobal.com> <https://synsoftglobal.com>
+ * @license  MIT
+ * @see https://github.com/synsoft-global/IONIC-4-Sample
+ */
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, Validators, Form } from '@angular/forms';
-import { AuthService, LockerService, matchingPasswords, CommonService } from '../../shared/services/index';
+import { AuthService, LockerService, CommonService } from '../../shared/services/index';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { _ } from 'underscore';
@@ -27,8 +34,19 @@ export class ResetPasswordComponent implements OnInit {
   encodedId: any;
   linkExpired: boolean = false;
   encodedToken: any;
-
   subscriptions: any[] = [];
+
+  /**
+   * @constructor
+   * @param  {FormBuilder} private_fb: used to create forms
+   * @param  {LockerService} private_lockerService: used to handle local storage
+   * @param  {AuthService} private_authService: authentication service
+   * @param  {Router} privaterouter: used for routing
+   * @param  {ActivatedRoute} privateroute
+   * @param  {AlertController} public_alertController: used to generate alert notifications
+   * @param  {CommonService} private_commonService: used to invoke common service
+   * @param  {XlatPipe} private_xlat: used to translate instant conversion
+   */
   constructor(
     private _fb: FormBuilder,
     private _lockerService: LockerService,
@@ -39,6 +57,12 @@ export class ResetPasswordComponent implements OnInit {
     private _commonService: CommonService,
     private xlat: XlatPipe
   ) {
+
+    /**
+    * changePasswordForm form group.
+   * username control.
+   * password conrol.
+   */
     this.changePasswordForm = _fb.group({
       password: new FormControl('', [
         Validators.required,
@@ -46,30 +70,28 @@ export class ResetPasswordComponent implements OnInit {
       password2: new FormControl('', [
         Validators.required,
       ]),
-    }, {
-        validator: matchingPasswords('password', 'password2', '')
-      });
+    });
   }
 
 
   /**
-  * Init check password function and verify token.
-  *
-  * */
-
+  * Call ngOninit when login componenet loaded.
+  * Check if token already exists return home page.
+  * username control.
+  * @router private
+  * @Isloggin private
+  * @encodedId private
+  * @encodedToken private
+  */
   ngOnInit() {
     if (!!this._lockerService.get('demo_token')) {
       this.Isloggin = true;
       this.router.navigate(['/app/orders']);
     }
-
     this._commonService.showLoading(true);
-
     this.subscriptions.push(this.route.params.subscribe(params => {
-      // get company id from url
       this.encodedId = params['id'];
       this.encodedToken = params['token'];
-
     }))
 
 
@@ -79,20 +101,14 @@ export class ResetPasswordComponent implements OnInit {
         console.log('requestDate');
         console.log(requestDate);
         let now = new Date();
-
         let requestDateTransformed = new Date(requestDate).getTime();
-        console.log('requestDateTransformed');
-        console.log(requestDateTransformed);
-
         requestDateTransformed += 60 * 60000;
-
-
-
         let threshold = new Date(requestDateTransformed);
 
-        console.log(threshold);
-        console.log(now);
-
+        /**
+         * Match if token time expired.
+         * Redirect to login page if token expired.
+         */
         if (threshold < now) {
           this.linkExpired = true; // expired link for changing passwords
           this.showError("LINK_EXPIRED");
@@ -100,12 +116,10 @@ export class ResetPasswordComponent implements OnInit {
         }
       } else {
         this.showError("INVALID_USER");
-        //this.router.navigate(['/']);
         this._commonService.showLoading(false);
       }
     }, err => {
       this.showError("INVALID_USER");
-      // this.router.navigate(['/']);
       this._commonService.showLoading(false);
     })
 
@@ -113,18 +127,18 @@ export class ResetPasswordComponent implements OnInit {
 
 
   /**
+   * @changePassword
   * Change password
+  * @param value:object
+  * redirect after successfully update password.
   *
   * */
   changePassword(value) {
-
     var data = {
       token: this.encodedToken,
       id: this.encodedId,
       password: value.password1
     };
-
-
     this._authService.changePasswordCheck(data).subscribe(user => {
       if (!user.error) {
         this._authService.updateuserWithoutLogin({ data: { user: user.user } }).subscribe(data => {
@@ -140,7 +154,9 @@ export class ResetPasswordComponent implements OnInit {
 
   /**
   * Show Success alert
-  *
+  * @param  {String} message
+  * @alertController public
+  * @xlat private
   * */
   async showSuccess(message) {
     const alert = await this.alertController.create({
@@ -155,6 +171,9 @@ export class ResetPasswordComponent implements OnInit {
 
   /**
   * Show error alert
+  * @param  {String} message
+  * @alertController public
+  * @xlat private
   *
   * */
   async showError(message) {
@@ -166,9 +185,11 @@ export class ResetPasswordComponent implements OnInit {
     await alert.present();
   }
 
+  /**
+   * Called once, before the instance is destroyed.
+   * Add 'implements OnDestroy' to the class.
+   * */
   ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
     this.subscriptions.forEach(s => s.unsubscribe());
   }
 

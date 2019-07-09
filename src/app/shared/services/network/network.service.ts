@@ -1,3 +1,9 @@
+/*!
+ * This file inclide network related services. *
+ * @author   Ajay Mishra <ajaymishra@synsoftglobal.com> <https://synsoftglobal.com>
+ * @license  MIT
+ * @see https://github.com/synsoft-global/IONIC-4-Sample
+ */
 import { Injectable } from '@angular/core';
 import { Network } from '@ionic-native/network/ngx';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
@@ -44,13 +50,20 @@ export class NetworkService {
   }
 
   /**
-  *  Check Network status
-  *
+  *  Check Network status and update inside app.
+  * @platform private
+  * @networkOnlineSubscription private
+  * @network private
+  * @_lockerService private
+  * @_commonService private
   */
-
   checkConnection() {
     let self = this;
     if (this.platform.is('cordova')) {
+      /**
+       * Check if platform is cordova.
+       * Check and subscribe network status.
+       */
       this.platform.ready().then(() => {
         this.networkOnlineSubscription = this.network.onConnect().subscribe(() => {
           self._lockerService.set('connection_status', 0, this._config.TokenExpiryDays);
@@ -62,6 +75,10 @@ export class NetworkService {
         });
       });
     } else {
+      /**
+     * Check if platform is browser.
+     * Check and subscribe network status.
+     */
       if (navigator.onLine) {
         self._lockerService.set('connection_status', 0, this._config.TokenExpiryDays);
         self._commonService.showNetworkChange(true);
@@ -71,10 +88,5 @@ export class NetworkService {
       }
     }
   }
-
-
-
-
-
 }
 
